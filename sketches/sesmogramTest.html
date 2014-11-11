@@ -32,7 +32,7 @@
 
                 // toggleable constraints
                 this.averageMeanLine = true;
-                this.sameSlope = false;
+                this.sameSlope = true;
                 this.connectEndPoint = false;
 
                 this.links.setDefault("layoutColor", [255,0,255]);
@@ -69,10 +69,11 @@
             ABM.Model.prototype.setupMouseEvents = function() {
                 this.nodes.setDraggable();
                 this.links.setDraggable();
-                this.links.on("drag", this.checkConstraints.bind(this))
+                this.links.on("drag", this.checkLinkConstraints.bind(this))
+                this.nodes.on("drag", this.checkAgentConstraints.bind(this))
             }
 
-            ABM.Model.prototype.checkConstraints = function(e) {
+            ABM.Model.prototype.checkLinkConstraints = function(e) {
                 if (this.averageMeanLine) {
                     this.averageMeanLines(e.target)
                 }
@@ -82,6 +83,25 @@
                 if (this.connectEndPoint) {
 
                 }
+            }
+
+            ABM.Model.prototype.checkAgentConstraints = function(e) {
+                if (this.sameSlope) {
+                    this.adjustSlopeOfLines(e.target);
+                }
+            }
+
+            ABM.Model.prototype.adjustSlopeOfLines = function(node) {
+                var neighbor = node.linkNeighbors()[0];
+                var slope = (node.p.y - neighbor.p.y)/(node.p.x - neighbor.p.x);
+
+                for (link of this.meanLines) {
+                    var yIntercept = link.end1.p.y - (slope * link.end1.p.x);
+                    var y = (slope * link.end2.p.x) + yIntercept; 
+                    link.end2.setXY(link.end2.p.x, y);
+
+                }
+
             }
 
             ABM.Model.prototype.averageMeanLines = function(link) {
@@ -96,12 +116,12 @@
                 var numMidLinks = Math.abs(link.id - baseLink.id);
                 var distLinkToBaseLinkEnd1Y = Math.abs(link.end1.p.y - baseLink.end1.p.y);
                 var distLinkToBaseLinkEnd2Y = Math.abs(link.end2.p.y - baseLink.end2.p.y);
-                var distanceBtwnEnds1Y = distLinkToBaseLinkEnd1Y/numMidLinks;
-                var distanceBtwnEnds2Y = distLinkToBaseLinkEnd2Y/numMidLinks;
+                var distanceBtwnLinksEnds1Y = distLinkToBaseLinkEnd1Y/numMidLinks;
+                var distanceBtwnLinksEnds2Y = distLinkToBaseLinkEnd2Y/numMidLinks;
 
                 for (link of this.meanLines) {
-                    var Y1 = this.meanLines[0].end1.p.y + (distanceBtwnEnds1Y * link.id);
-                    var Y2 = this.meanLines[0].end2.p.y + (distanceBtwnEnds2Y * link.id);
+                    var Y1 = this.meanLines[0].end1.p.y + (distanceBtwnLinksEnds1Y * link.id);
+                    var Y2 = this.meanLines[0].end2.p.y + (distanceBtwnLinksEnds2Y * link.id);
 
                     link.end1.setXY(link.end1.p.x, Y1 );
                     link.end2.setXY(link.end2.p.x, Y2 );
