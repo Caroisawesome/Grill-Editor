@@ -29,11 +29,12 @@
                 this.y = 10;
                 this.previousNode = null;
                 this.meanLines = [];
+                this.nodeDict = {};
 
                 // toggleable constraints
                 this.averageMeanLine = true;
-                this.sameSlope = true;
-                this.connectEndPoint = false;
+                this.sameSlope = false;
+                this.connectEndPoint = true;
 
                 this.links.setDefault("layoutColor", [255,0,255]);
 
@@ -54,6 +55,7 @@
                     this.nodes.create(this.numNodes);
                     for (var i = 0; i < this.agents.length; i++) {
                         node = this.agents[i];
+                        this.nodeDict[node.id] = node;
                         i % 2 === 0 ? x = this.x1 : x = this.x2;
                         if (i % 2 === 0) {this.y += 10};
                         node.setXY(x, this.y)
@@ -79,10 +81,18 @@
 
             ABM.Model.prototype.checkAgentConstraints = function(e) {
                 if (this.sameSlope) { this.adjustSlopeOfLines(e.target) }
-                if (this.connectEndPoint) { this.adjustCorrespondingEndPoint(e.target) }
+                if (this.connectEndPoint) { this.adjustCorrespondingEndPoint(e.target, e.dy) }
             }
 
-            ABM.Model.prototype.adjustCorrespondingEndPoint = function(node) {
+            ABM.Model.prototype.adjustCorrespondingEndPoint = function(node, dy) {
+                var id, linkNeighbor = node.linkNeighbors()[0];
+                node.id < linkNeighbor.id ? id = node.id + 2 : id = node.id - 3 ; 
+                var newLineNeighbor = this.nodeDict[id];
+
+                if (newLineNeighbor) {
+                    newLineNeighbor.setXY(newLineNeighbor.p.x, newLineNeighbor.p.y - dy);
+                }
+
 
             }
 
