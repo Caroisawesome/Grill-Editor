@@ -1,0 +1,131 @@
+<html>
+  <head>
+    <title>SeismogramTest</title>
+    <script src="../lib/agentscript.js"></script>
+    <script src="../lib/mouse.js"></script>
+    <script src="../tools/coffee-script.js"></script>
+    <script type="text/javascript">
+        myModel = function () {
+            var u = ABM.Util
+            ABM.Model.prototype.startup = function () {
+                console.log("startup");
+            };
+            ABM.Model.prototype.setup = function() {
+                this.patches.usePixels();
+                this.refreshPatches = false;
+                this.refreshLinks = true;
+
+                // defaults
+                this.agentBreeds("nodes");
+                this.nodes.setDefault("shape", "circle");
+                this.nodes.setDefault("size", 1);
+
+                this.anim.setRate(30, true );
+
+                // globals
+                this.numNodes = 10;
+                this.x1 = 20;
+                this.x2 = 60;
+                this.y = 10;
+                this.previousNode = null;
+                this.meanLines = [];
+
+                // toggleable constraints
+                this.averageMeanLine = true;
+                this.sameSlope = false;
+                this.connectEndPoint = false;
+
+                this.links.setDefault("layoutColor", [255,0,255]);
+
+                this.mouse = new ABM.Mouse(this);
+                this.setupNodesAndLinks();
+                this.setupMouseEvents();
+                
+
+
+            }
+
+
+            ABM.Model.prototype.step = function() {
+
+            }
+
+            ABM.Model.prototype.setupNodesAndLinks = function(){
+                    this.nodes.create(this.numNodes);
+                    for (var i = 0; i < this.agents.length; i++) {
+                        node = this.agents[i];
+                        i % 2 === 0 ? x = this.x1 : x = this.x2;
+                        if (i % 2 === 0) {this.y += 10};
+                        node.setXY(x, this.y)
+                        if (this.previousNode !== null && i % 2 !== 0) {
+                            var link = this.links.create(node, this.previousNode);
+                            this.meanLines.push(link[0]);
+                        }
+                        this.previousNode = node; 
+                    }
+                
+            }
+
+            ABM.Model.prototype.setupMouseEvents = function() {
+                this.nodes.setDraggable();
+                this.links.setDraggable();
+                this.links.on("drag", this.checkConstraints.bind(this))
+            }
+
+            ABM.Model.prototype.checkConstraints = function(e) {
+                if (this.averageMeanLine) {
+                    this.averageMeanLines(e.target)
+                }
+                if (this.sameSlope) {
+
+                }
+                if (this.connectEndPoint) {
+
+                }
+            }
+
+            ABM.Model.prototype.averageMeanLines = function(link) {
+                var bottomLink = this.meanLines[0];
+                var topLink = this.meanLines[this.meanLines.length-1];
+                var baseLink;   // remains stationary when other links are dragged.
+                                // baseLink is bottom link unless bottom link is dragged
+                                // else, top link.
+
+                bottomLink == link ? baseLink = topLink : baseLink = bottomLink;
+
+                var numMidLinks = Math.abs(link.id - baseLink.id);
+                var distLinkToBaseLinkEnd1Y = Math.abs(link.end1.p.y - baseLink.end1.p.y);
+                var distLinkToBaseLinkEnd2Y = Math.abs(link.end2.p.y - baseLink.end2.p.y);
+                var distanceBtwnEnds1Y = distLinkToBaseLinkEnd1Y/numMidLinks;
+                var distanceBtwnEnds2Y = distLinkToBaseLinkEnd2Y/numMidLinks;
+
+                for (link of this.meanLines) {
+                    var Y1 = this.meanLines[0].end1.p.y + (distanceBtwnEnds1Y * link.id);
+                    var Y2 = this.meanLines[0].end2.p.y + (distanceBtwnEnds2Y * link.id);
+
+                    link.end1.setXY(link.end1.p.x, Y1 );
+                    link.end2.setXY(link.end2.p.x, Y2 );
+
+                }
+
+            }
+
+            model = new ABM.Model({
+                div: "layers",
+                size: 6,  // must update calculateDistance if changing patch size
+                minX: 1,
+                maxX: Math.floor(window.innerWidth / 6),
+                minY: 1,
+                maxY: Math.floor(window.innerHeight / 6)
+            });
+
+            model.debug();
+            model.start();
+        }
+    </script>
+  </head>
+
+  <body onload="myModel();">
+    <div id="layers"></div>
+  </body>
+</html>
