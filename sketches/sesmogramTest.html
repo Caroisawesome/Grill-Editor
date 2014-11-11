@@ -74,21 +74,16 @@
             }
 
             ABM.Model.prototype.checkLinkConstraints = function(e) {
-                if (this.averageMeanLine) {
-                    this.averageMeanLines(e.target)
-                }
-                if (this.sameSlope) {
-
-                }
-                if (this.connectEndPoint) {
-
-                }
+                if (this.averageMeanLine) { this.averageMeanLines(e.target) }
             }
 
             ABM.Model.prototype.checkAgentConstraints = function(e) {
-                if (this.sameSlope) {
-                    this.adjustSlopeOfLines(e.target);
-                }
+                if (this.sameSlope) { this.adjustSlopeOfLines(e.target) }
+                if (this.connectEndPoint) { this.adjustCorrespondingEndPoint(e.target) }
+            }
+
+            ABM.Model.prototype.adjustCorrespondingEndPoint = function(node) {
+
             }
 
             ABM.Model.prototype.adjustSlopeOfLines = function(node) {
@@ -96,9 +91,15 @@
                 var slope = (node.p.y - neighbor.p.y)/(node.p.x - neighbor.p.x);
 
                 for (link of this.meanLines) {
-                    var yIntercept = link.end1.p.y - (slope * link.end1.p.x);
-                    var y = (slope * link.end2.p.x) + yIntercept; 
-                    link.end2.setXY(link.end2.p.x, y);
+                    if (neighbor.id > node.id) {
+                        var yIntercept = link.end1.p.y - (slope * link.end1.p.x);
+                        var end2y = (slope * link.end2.p.x) + yIntercept; 
+                        link.end2.setXY(link.end2.p.x, end2y);
+                    } else {
+                        var yIntercept = link.end2.p.y - (slope * link.end2.p.x);
+                        var end1y = (slope * link.end1.p.x) + yIntercept; 
+                        link.end1.setXY(link.end1.p.x, end1y);
+                    }
 
                 }
 
