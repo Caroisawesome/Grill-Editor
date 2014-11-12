@@ -3,6 +3,8 @@
     <title>SeismogramTest</title>
     <script src="../lib/agentscript.js"></script>
     <script src="../lib/mouse.js"></script>
+    <script src="../tools/dat.gui.min.js"></script>
+    <script src="../lib/as.dat.gui.js"></script>
     <script src="../tools/coffee-script.js"></script>
     <script type="text/javascript">
         myModel = function () {
@@ -40,6 +42,7 @@
 
                 this.mouse = new ABM.Mouse(this);
                 this.setupNodesAndLinks();
+                this.setupPatches();
                 this.setupMouseEvents();
                 
 
@@ -66,6 +69,12 @@
                         this.previousNode = node; 
                     }
                 
+            }
+
+            ABM.Model.prototype.setupPatches = function() {
+                for (p of this.patches) {
+                    p.color = [255,255,255, 0];
+                }
             }
 
             ABM.Model.prototype.setupMouseEvents = function() {
@@ -152,6 +161,22 @@
 
             model.debug();
             model.start();
+
+            gui = new ABM.DatGUI(model, {
+              "sameSlope": {
+                type: "switch",
+                val: true
+              },
+              "connectEndPoint": {
+                type: "switch",
+                val: true
+              },
+              "averageMeanLine": {
+                type: "switch",
+                val: true
+              }
+            })
+
         }
     </script>
   </head>
