@@ -95,7 +95,7 @@
 
             ABM.Model.prototype.adjustCorrespondingEndPoint = function(node, dy) {
                 var id, linkNeighbor = node.linkNeighbors()[0];
-                node.id < linkNeighbor.id ? id = node.id + 2 : id = node.id - 3 ; 
+                node.id < linkNeighbor.id ? id = node.id + 3 : id = node.id - 3 ; 
                 var newLineNeighbor = this.nodeDict[id];
 
                 if (newLineNeighbor) {
