@@ -20,23 +20,23 @@
                 // defaults
                 this.agentBreeds("nodes");
                 this.nodes.setDefault("shape", "circle");
-                this.nodes.setDefault("size", 1);
+                this.nodes.setDefault("size", 3);
 
                 this.anim.setRate(30, true );
 
                 // globals
                 this.numNodes = 10;
-                this.x1 = 20;
-                this.x2 = 60;
-                this.y = 10;
+                this.x1 = this.patches.maxX/5;
+                this.x2 = this.patches.maxX * (4/5);
+                this.y = this.patches.maxY/8;
                 this.previousNode = null;
                 this.meanLines = [];
                 this.nodeDict = {};
 
                 // toggleable constraints
-                this.averageMeanLine = true;
+                this.averageMeanLine = false;
                 this.sameSlope = false;
-                this.connectEndPoint = true;
+                this.connectEndPoint = false;
 
                 this.links.setDefault("layoutColor", [255,0,255]);
 
@@ -60,7 +60,7 @@
                         node = this.agents[i];
                         this.nodeDict[node.id] = node;
                         i % 2 === 0 ? x = this.x1 : x = this.x2;
-                        if (i % 2 === 0) {this.y += 10};
+                        if (i % 2 === 0) {this.y += this.patches.maxY/10};
                         node.setXY(x, this.y)
                         if (this.previousNode !== null && i % 2 !== 0) {
                             var link = this.links.create(node, this.previousNode);
@@ -73,7 +73,7 @@
 
             ABM.Model.prototype.setupPatches = function() {
                 for (p of this.patches) {
-                    p.color = [255,255,255, 0];
+                    p.color = [0,0,0, 0.2];
                 }
             }
 
@@ -152,11 +152,11 @@
 
             model = new ABM.Model({
                 div: "layers",
-                size: 6,  // must update calculateDistance if changing patch size
+                size: 2,  
                 minX: 1,
-                maxX: Math.floor(window.innerWidth / 6),
+                maxX: Math.floor(window.innerWidth/2),
                 minY: 1,
-                maxY: Math.floor(window.innerHeight / 6)
+                maxY: Math.floor(window.innerHeight/2)
             });
 
             model.debug();
@@ -165,15 +165,15 @@
             gui = new ABM.DatGUI(model, {
               "sameSlope": {
                 type: "switch",
-                val: true
+                val: false
               },
               "connectEndPoint": {
                 type: "switch",
-                val: true
+                val: false
               },
               "averageMeanLine": {
                 type: "switch",
-                val: true
+                val: false
               }
             })
 
