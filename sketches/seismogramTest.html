@@ -128,25 +128,24 @@
                 var newLineNeighbor = this.nodeDict[id];
 
                 if (newLineNeighbor) {
-                    newLineNeighbor.setXY(newLineNeighbor.p.x, newLineNeighbor.p.y - dy);
+                    newLineNeighbor.setXY(newLineNeighbor.x, newLineNeighbor.y - dy);
                 }
-
 
             }
 
             ABM.Model.prototype.adjustSlopeOfLines = function(node) {
                 var neighbor = node.linkNeighbors()[0];
-                var slope = (node.p.y - neighbor.p.y)/(node.p.x - neighbor.p.x);
+                var slope = (node.y - neighbor.y)/(node.x - neighbor.x);
 
                 for (link of this.meanLines) {
                     if (neighbor.id > node.id) {
-                        var yIntercept = link.end1.p.y - (slope * link.end1.p.x);
-                        var end2y = (slope * link.end2.p.x) + yIntercept; 
-                        link.end2.setXY(link.end2.p.x, end2y);
+                        var yIntercept = link.end1.y - (slope * link.end1.x);
+                        var end2y = (slope * link.end2.x) + yIntercept; 
+                        link.end2.setXY(link.end2.x, end2y);
                     } else {
-                        var yIntercept = link.end2.p.y - (slope * link.end2.p.x);
-                        var end1y = (slope * link.end1.p.x) + yIntercept; 
-                        link.end1.setXY(link.end1.p.x, end1y);
+                        var yIntercept = link.end2.y - (slope * link.end2.x);
+                        var end1y = (slope * link.end1.x) + yIntercept; 
+                        link.end1.setXY(link.end1.x, end1y);
                     }
 
                 }
@@ -163,20 +162,58 @@
                 bottomLink == link ? baseLink = topLink : baseLink = bottomLink;
 
                 var numMidLinks = Math.abs(link.id - baseLink.id);
-                var distLinkToBaseLinkEnd1Y = Math.abs(link.end1.p.y - baseLink.end1.p.y);
-                var distLinkToBaseLinkEnd2Y = Math.abs(link.end2.p.y - baseLink.end2.p.y);
+                var distLinkToBaseLinkEnd1Y = Math.abs(link.end1.y - baseLink.end1.y);
+                var distLinkToBaseLinkEnd2Y = Math.abs(link.end2.y - baseLink.end2.y);
                 var distanceBtwnLinksEnds1Y = distLinkToBaseLinkEnd1Y/numMidLinks;
                 var distanceBtwnLinksEnds2Y = distLinkToBaseLinkEnd2Y/numMidLinks;
 
                 for (link of this.meanLines) {
-                    var Y1 = this.meanLines[0].end1.p.y + (distanceBtwnLinksEnds1Y * link.id);
-                    var Y2 = this.meanLines[0].end2.p.y + (distanceBtwnLinksEnds2Y * link.id);
+                    var Y1 = this.meanLines[0].end1.y + (distanceBtwnLinksEnds1Y * link.id);
+                    var Y2 = this.meanLines[0].end2.y + (distanceBtwnLinksEnds2Y * link.id);
 
-                    link.end1.setXY(link.end1.p.x, Y1 );
-                    link.end2.setXY(link.end2.p.x, Y2 );
+                    link.end1.setXY(link.end1.x, Y1 );
+                    link.end2.setXY(link.end2.x, Y2 );
 
                 }
 
+            }
+
+            ABM.Model.prototype.correctNodeXPosition = function(e) {
+                var end1, end2, node = e.target;
+
+                if (node.id % 2 === 0) {
+                    end1 = this.corners[0];
+                    end2 = this.corners[3];
+                } else {
+                    end1 = this.corners[1];
+                    end2 = this.corners[2];
+                }
+    
+                var x = this.calculateXValue(node, end1, end2);
+                node.setXY(x, node.y);
+
+            }
+
+            ABM.Model.prototype.calculateXValue = function(node, end1, end2) {
+                var slope = this.determineSlope(end1, end2);
+                return (node.y - this.determineYIntercept(end1, slope))/slope;
+            }   
+
+            ABM.Model.prototype.determineSlope = function(end1, end2) {
+                return (end1.y - end2.y)/(end1.x - end2.x);
+            }
+
+            ABM.Model.prototype.determineYIntercept = function(point, slope) {
+                return point.y - (slope * point.x);
+            }
+
+
+            ABM.Model.prototype.correctEndPointXPositions = function(e) {
+                var link = e.target;
+                var node1 = link.end1;
+                var node2 = link.end2;
+                node1.setXY(node1.originalx, node1.p.y);
+                node2.setXY(node2.originalx, node2.p.y);
             }
 
             model = new ABM.Model({
