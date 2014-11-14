@@ -18,17 +18,23 @@
                 this.refreshLinks = true;
 
                 // defaults
-                this.agentBreeds("nodes");
+                this.agentBreeds("nodes corners");
                 this.nodes.setDefault("shape", "circle");
                 this.nodes.setDefault("size", 3);
+                this.nodes.setDefault("color", [0,0,0]);
+                this.corners.setDefault("size", 3);
+                this.corners.setDefault("color", [0,255,0]);
 
                 this.anim.setRate(30, true );
 
                 // globals
                 this.numNodes = 10;
+                this.numCorners = 4;
                 this.x1 = this.patches.maxX/5;
                 this.x2 = this.patches.maxX * (4/5);
                 this.y = this.patches.maxY/8;
+                this.bottomBoxY = this.patches.maxY/10;
+                this.topBoxY = this.patches.maxY*(9/10);
                 this.previousNode = null;
                 this.meanLines = [];
                 this.nodeDict = {};
@@ -42,6 +48,7 @@
 
                 this.mouse = new ABM.Mouse(this);
                 this.setupNodesAndLinks();
+                this.setupBoxCorners();
                 this.setupPatches();
                 this.setupMouseEvents();
                 
@@ -56,12 +63,13 @@
 
             ABM.Model.prototype.setupNodesAndLinks = function(){
                     this.nodes.create(this.numNodes);
-                    for (var i = 0; i < this.agents.length; i++) {
-                        node = this.agents[i];
+                    for (var i = 0; i < this.nodes.length; i++) {
+                        var x, node = this.nodes[i];
                         this.nodeDict[node.id] = node;
                         i % 2 === 0 ? x = this.x1 : x = this.x2;
                         if (i % 2 === 0) {this.y += this.patches.maxY/10};
                         node.setXY(x, this.y)
+                        node.originalx = x;
                         if (this.previousNode !== null && i % 2 !== 0) {
                             var link = this.links.create(node, this.previousNode);
                             this.meanLines.push(link[0]);
@@ -69,6 +77,22 @@
                         this.previousNode = node; 
                     }
                 
+            }
+
+            ABM.Model.prototype.setupBoxCorners = function() {
+                this.corners.create(this.numCorners)
+                var numCorners = this.corners.length;
+                var firstCorner = this.corners[0];
+                var lastCorner = this.corners[numCorners-1];
+                for (var i = 0; i < numCorners; i++) {
+                    var x, y;
+                    var corner = this.corners[i];
+                    var previousCorner = this.corners[i-1]|| lastCorner;
+                    corner === firstCorner || corner === lastCorner ? x = this.x1 : x = this.x2;
+                    i < 2 ? y = this.topBoxY : y = this.bottomBoxY;
+                    corner.setXY(x, y);
+                    var link = this.links.create(corner, previousCorner)[0]
+                }
             }
 
             ABM.Model.prototype.setupPatches = function() {
@@ -79,9 +103,14 @@
 
             ABM.Model.prototype.setupMouseEvents = function() {
                 this.nodes.setDraggable();
-                this.links.setDraggable();
-                this.links.on("drag", this.checkLinkConstraints.bind(this))
-                this.nodes.on("drag", this.checkAgentConstraints.bind(this))
+                this.corners.setDraggable();
+                for (line of this.meanLines) {
+                    line.setDraggable();
+                    line.on("drag", this.correctEndPointXPositions.bind(this));
+                    line.on("drag", this.checkLinkConstraints.bind(this));
+                }
+                this.nodes.on("drag", this.checkAgentConstraints.bind(this));
+                this.nodes.on("drag", this.correctNodeXPosition.bind(this));
             }
 
             ABM.Model.prototype.checkLinkConstraints = function(e) {
