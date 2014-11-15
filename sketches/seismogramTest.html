@@ -23,6 +23,7 @@
                 this.nodes.setDefault("size", 3);
                 this.nodes.setDefault("color", [0,0,0]);
                 this.corners.setDefault("size", 3);
+                this.corners.setDefault("shape", "circle");
                 this.corners.setDefault("color", [0,255,0]);
 
                 this.anim.setRate(30, true );
@@ -34,7 +35,7 @@
                 this.x2 = this.patches.maxX * (4/5);
                 this.y = this.patches.maxY/8;
                 this.bottomBoxY = this.patches.maxY/10;
-                this.topBoxY = this.patches.maxY*(9/10);
+                this.topBoxY = this.patches.maxY*(7/10);
                 this.previousNode = null;
                 this.meanLines = [];
                 this.nodeDict = {};
