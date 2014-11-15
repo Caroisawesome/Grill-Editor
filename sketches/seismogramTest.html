@@ -105,13 +105,14 @@
             ABM.Model.prototype.setupMouseEvents = function() {
                 this.nodes.setDraggable();
                 this.corners.setDraggable();
+                this.corners.on("drag", this.adjustLinkEndPositions.bind(this));
+                this.nodes.on("drag", this.adjustNodeXPosition.bind(this));
+                this.nodes.on("drag", this.checkAgentConstraints.bind(this));
                 for (line of this.meanLines) {
                     line.setDraggable();
-                    line.on("drag", this.correctEndPointXPositions.bind(this));
+                    line.on("drag", this.adjustEndPointXPositions.bind(this));
                     line.on("drag", this.checkLinkConstraints.bind(this));
                 }
-                this.nodes.on("drag", this.checkAgentConstraints.bind(this));
-                this.nodes.on("drag", this.correctNodeXPosition.bind(this));
             }
 
             ABM.Model.prototype.checkLinkConstraints = function(e) {
@@ -179,8 +180,30 @@
 
             }
 
-            ABM.Model.prototype.correctNodeXPosition = function(e) {
-                var end1, end2, node = e.target;
+            ABM.Model.prototype.adjustLinkEndPositions = function(e) {
+                for (link of this.meanLines) {
+                    this.adjustEndPointXPositions(link);
+                }
+            }
+
+            ABM.Model.prototype.adjustNodeXPosition = function(e) {
+                var node, corners, x;
+                e.target ? node = e.target : node = e;
+
+                corners = this.determineCorrespondingCorners(node);
+                x = this.calculateXValueBetweenTwoPoints(node.y, corners.end1, corners.end2);
+                node.setXY(x, node.y);
+            }
+
+            ABM.Model.prototype.adjustEndPointXPositions = function(e) {
+                var link;
+                e.target ? link = e.target: link = e ;
+                this.adjustNodeXPosition(link.end1);
+                this.adjustNodeXPosition(link.end2);
+            }
+
+            ABM.Model.prototype.determineCorrespondingCorners = function(node) {
+                var end1, end2;
 
                 if (node.id % 2 === 0) {
                     end1 = this.corners[0];
@@ -189,15 +212,22 @@
                     end1 = this.corners[1];
                     end2 = this.corners[2];
                 }
-    
-                var x = this.calculateXValue(node, end1, end2);
-                node.setXY(x, node.y);
 
+                return {end1: end1, end2: end2}
+                
             }
 
-            ABM.Model.prototype.calculateXValue = function(node, end1, end2) {
+            ABM.Model.prototype.determineYValueFromPointAndSlope = function(point, x, slope) {
+                var yIntercept = this.determineYIntercept(point, slope);
+                return (slope * x) + yIntercept;
+            }
+
+            ABM.Model.prototype.calculateXValueBetweenTwoPoints = function(y, end1, end2) {
+                if (end1.x == end2.x) {
+                    return end1.x;
+                }
                 var slope = this.determineSlope(end1, end2);
-                return (node.y - this.determineYIntercept(end1, slope))/slope;
+                return (y - this.determineYIntercept(end1, slope))/slope;
             }   
 
             ABM.Model.prototype.determineSlope = function(end1, end2) {
@@ -209,13 +239,6 @@
             }
 
 
-            ABM.Model.prototype.correctEndPointXPositions = function(e) {
-                var link = e.target;
-                var node1 = link.end1;
-                var node2 = link.end2;
-                node1.setXY(node1.originalx, node1.p.y);
-                node2.setXY(node2.originalx, node2.p.y);
-            }
 
             model = new ABM.Model({
                 div: "layers",
