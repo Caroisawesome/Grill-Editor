@@ -52,8 +52,6 @@
                 this.setupBoxCorners();
                 this.setupPatches();
                 this.setupMouseEvents();
-                
-
 
             }
 
@@ -70,7 +68,7 @@
                         i % 2 === 0 ? x = this.x1 : x = this.x2;
                         if (i % 2 === 0) {this.y += this.patches.maxY/10};
                         node.setXY(x, this.y)
-                        node.originalx = x;
+
                         if (this.previousNode !== null && i % 2 !== 0) {
                             var link = this.links.create(node, this.previousNode);
                             this.meanLines.push(link[0]);
@@ -137,22 +135,24 @@
 
             ABM.Model.prototype.adjustSlopeOfLines = function(node) {
                 var neighbor = node.linkNeighbors()[0];
-                var slope = (node.y - neighbor.y)/(node.x - neighbor.x);
+                var slope = this.determineSlope(node, neighbor);
+                var x, y;
 
                 for (link of this.meanLines) {
                     if (neighbor.id > node.id) {
-                        var yIntercept = link.end1.y - (slope * link.end1.x);
-                        var end2y = (slope * link.end2.x) + yIntercept; 
-                        link.end2.setXY(link.end2.x, end2y);
+                        x = link.end2.x;
+                        y = this.determineYValueFromPointAndSlope(link.end1, x, slope);
+                        link.end2.setXY(x, y);
                     } else {
-                        var yIntercept = link.end2.y - (slope * link.end2.x);
-                        var end1y = (slope * link.end1.x) + yIntercept; 
-                        link.end1.setXY(link.end1.x, end1y);
+                        x = link.end1.x;
+                        y = this.determineYValueFromPointAndSlope(link.end2, x, slope);
+                        link.end1.setXY(x, y);
                     }
 
                 }
 
             }
+
 
             ABM.Model.prototype.averageMeanLines = function(link) {
                 var bottomLink = this.meanLines[0];
