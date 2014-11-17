@@ -100,7 +100,9 @@ This can be a huge savings in memory.</p>
   <span class="hljs-attribute">sprite</span>: <span class="hljs-literal">null</span>        <span class="hljs-comment"># an image of me for optimized drawing</span>
   <span class="hljs-attribute">cacheLinks</span>: <span class="hljs-literal">false</span>   <span class="hljs-comment"># should I keep links to/from me in links array?.</span>
   <span class="hljs-attribute">links</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># array of links to/from me as an endpoint; init by ctor</span>
-  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># called by agentSets create factory, not user</span>
+  <span class="hljs-attribute">isDragging</span>: <span class="hljs-literal">false</span>
+  <span class="hljs-attribute">constructor</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># called by agentSets create factory, not user</span>
+    u.mixin(@, <span class="hljs-keyword">new</span> Evented())
     <span class="hljs-property">@x</span> = <span class="hljs-property">@y</span> = <span class="hljs-number">0</span>
     <span class="hljs-property">@p</span> = <span class="hljs-property">@model</span>.patches.patch <span class="hljs-property">@x</span>, <span class="hljs-property">@y</span>
     <span class="hljs-property">@color</span> = u.randomColor() <span class="hljs-keyword">unless</span> <span class="hljs-property">@color</span>? <span class="hljs-comment"># promote color if default not set</span>
@@ -138,7 +140,7 @@ This can be a huge savings in memory.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toString</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-string">"{id:<span class="hljs-subst">#{<span class="hljs-property">@id</span>}</span> xy:<span class="hljs-subst">#{u.aToFixed [<span class="hljs-property">@x</span>,<span class="hljs-property">@y</span>]}</span> c:<span class="hljs-subst">#{<span class="hljs-property">@color</span>}</span> h: <span class="hljs-subst">#{h=<span class="hljs-property">@heading</span>.toFixed <span class="hljs-number">2</span>}</span>/<span class="hljs-subst">#{Math.round(u.radToDeg(h))}</span>}"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toString</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-string">"{id:<span class="hljs-subst">#{<span class="hljs-property">@id</span>}</span> xy:<span class="hljs-subst">#{u.aToFixed [<span class="hljs-property">@x</span>,<span class="hljs-property">@y</span>]}</span> c:<span class="hljs-subst">#{<span class="hljs-property">@color</span>}</span> h: <span class="hljs-subst">#{h=<span class="hljs-property">@heading</span>.toFixed <span class="hljs-number">2</span>}</span>/<span class="hljs-subst">#{Math.round(u.radToDeg(h))}</span>}"</span></pre></div></div>
             
         </li>
         
@@ -278,7 +280,7 @@ Returns new heading.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">stamp</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@draw</span> <span class="hljs-property">@model</span>.drawing</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">stamp</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@draw</span> <span class="hljs-property">@model</span>.drawing</pre></div></div>
             
         </li>
         
@@ -438,7 +440,7 @@ agentset and removing any links I may have.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">die</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">die</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@breed</span>.remove @
     l.die() <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">by</span> -<span class="hljs-number">1</span>
     u.removeItem <span class="hljs-property">@p</span>.agents, @ <span class="hljs-keyword">if</span> <span class="hljs-property">@p</span>.agents?
@@ -490,11 +492,12 @@ from me, and within cone radians of my heading using patch topology</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
-              <p>Return other end of link from me</p>
+              <p>Return true if world coordinate falls on agent sprite</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">otherEnd</span>: <span class="hljs-function"><span class="hljs-params">(l)</span> -&gt;</span> <span class="hljs-keyword">if</span> l.end1 <span class="hljs-keyword">is</span> @ <span class="hljs-keyword">then</span> l.end2 <span class="hljs-keyword">else</span> l.end1</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hitTest</span>: <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span>
+    <span class="hljs-property">@distanceXY</span>(x, y) &lt; <span class="hljs-property">@size</span> * <span class="hljs-property">@model</span>.patches.size</pre></div></div>
             
         </li>
         
@@ -505,12 +508,11 @@ from me, and within cone radians of my heading using patch topology</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
-              <p>Return all links linked to me</p>
+              <p>Return other end of link from me</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">myLinks</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@links</span> ? (l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.links <span class="hljs-keyword">when</span> (l.end1 <span class="hljs-keyword">is</span> @) <span class="hljs-keyword">or</span> (l.end2 <span class="hljs-keyword">is</span> @))</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">otherEnd</span>: <span class="hljs-function"><span class="hljs-params">(l)</span> -&gt;</span> <span class="hljs-keyword">if</span> l.end1 <span class="hljs-keyword">is</span> @ <span class="hljs-keyword">then</span> l.end2 <span class="hljs-keyword">else</span> l.end1</pre></div></div>
             
         </li>
         
@@ -521,12 +523,12 @@ from me, and within cone radians of my heading using patch topology</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
-              <p>Return all agents linked to me.</p>
+              <p>Return all links linked to me</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">linkNeighbors</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># return all agents linked to me</span>
-    <span class="hljs-property">@otherEnd</span> l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">myLinks</span>: <span class="hljs-function">-&gt;</span>
+    <span class="hljs-property">@links</span> ? (l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@model</span>.links <span class="hljs-keyword">when</span> (l.end1 <span class="hljs-keyword">is</span> @) <span class="hljs-keyword">or</span> (l.end2 <span class="hljs-keyword">is</span> @))</pre></div></div>
             
         </li>
         
@@ -537,12 +539,12 @@ from me, and within cone radians of my heading using patch topology</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
-              <p>Return links where I am the “to” agent in links.create</p>
+              <p>Return all agents linked to me.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">myInLinks</span>:<span class="hljs-function"> -&gt;</span>
-    l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">when</span> l.end2 <span class="hljs-keyword">is</span> @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">linkNeighbors</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># return all agents linked to me</span>
+    <span class="hljs-property">@otherEnd</span> l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>()</pre></div></div>
             
         </li>
         
@@ -553,12 +555,12 @@ from me, and within cone radians of my heading using patch topology</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
-              <p>Return other end of myInLinks</p>
+              <p>Return links where I am the “to” agent in links.create</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inLinkNeighbors</span>:<span class="hljs-function"> -&gt;</span>
-    l.end1 <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">when</span> l.end2 <span class="hljs-keyword">is</span> @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">myInLinks</span>: <span class="hljs-function">-&gt;</span>
+    l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">when</span> l.end2 <span class="hljs-keyword">is</span> @</pre></div></div>
             
         </li>
         
@@ -569,12 +571,12 @@ from me, and within cone radians of my heading using patch topology</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
-              <p>Return links where I am the “from” agent in links.create</p>
+              <p>Return other end of myInLinks</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">myOutLinks</span>:<span class="hljs-function"> -&gt;</span>
-    l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">when</span> l.end1 <span class="hljs-keyword">is</span> @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">inLinkNeighbors</span>: <span class="hljs-function">-&gt;</span>
+    l.end1 <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">when</span> l.end2 <span class="hljs-keyword">is</span> @</pre></div></div>
             
         </li>
         
@@ -585,12 +587,38 @@ from me, and within cone radians of my heading using patch topology</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
+              <p>Return links where I am the “from” agent in links.create</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">myOutLinks</span>: <span class="hljs-function">-&gt;</span>
+    l <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">when</span> l.end1 <span class="hljs-keyword">is</span> @</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
               <p>Return other end of myOutinks</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">outLinkNeighbors</span>:<span class="hljs-function"> -&gt;</span>
-    l.end2 <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">when</span> l.end1 <span class="hljs-keyword">is</span> @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">outLinkNeighbors</span>: <span class="hljs-function">-&gt;</span>
+    l.end2 <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-property">@myLinks</span>() <span class="hljs-keyword">when</span> l.end1 <span class="hljs-keyword">is</span> @
+
+  <span class="hljs-attribute">setDraggable</span>: <span class="hljs-function">-&gt;</span> 
+    <span class="hljs-property">@on</span> <span class="hljs-string">'dragstart'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+      <span class="hljs-property">@dragging</span> = <span class="hljs-literal">true</span>
+
+    <span class="hljs-property">@on</span> <span class="hljs-string">'dragend'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+      <span class="hljs-property">@dragging</span> = <span class="hljs-literal">false</span>
+
+    <span class="hljs-property">@on</span> <span class="hljs-string">'drag'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+      <span class="hljs-property">@setXY</span>(mouseEvent.patchX, mouseEvent.patchY)</pre></div></div>
             
         </li>
         

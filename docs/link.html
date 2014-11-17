@@ -80,7 +80,9 @@
   <span class="hljs-attribute">label</span>: <span class="hljs-literal">null</span>         <span class="hljs-comment"># my text</span>
   <span class="hljs-attribute">labelColor</span>: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>] <span class="hljs-comment"># its color</span>
   <span class="hljs-attribute">labelOffset</span>: [<span class="hljs-number">0</span>,<span class="hljs-number">0</span>]  <span class="hljs-comment"># its offset from my midpoint</span>
+  <span class="hljs-attribute">isDragging</span>: <span class="hljs-literal">false</span>   
   <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@end1</span>, <span class="hljs-property">@end2</span>)</span> -&gt;</span>
+    u.mixin(@, <span class="hljs-keyword">new</span> Evented())
     <span class="hljs-keyword">if</span> <span class="hljs-property">@end1</span>.links?
       <span class="hljs-property">@end1</span>.links.push @
       <span class="hljs-property">@end2</span>.links.push @</pre></div></div>
@@ -137,11 +139,15 @@ is called with patch coordinate transform installed.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">die</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">die</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@breed</span>.remove @
     u.removeItem <span class="hljs-property">@end1</span>.links, @ <span class="hljs-keyword">if</span> <span class="hljs-property">@end1</span>.links?
     u.removeItem <span class="hljs-property">@end2</span>.links, @ <span class="hljs-keyword">if</span> <span class="hljs-property">@end2</span>.links?
-    <span class="hljs-literal">null</span></pre></div></div>
+    <span class="hljs-literal">null</span>
+
+  <span class="hljs-attribute">hitTest</span>: <span class="hljs-function"><span class="hljs-params">(x, y)</span> -&gt;</span>
+    distance = u.aSum (a.distanceXY x, y <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> <span class="hljs-property">@bothEnds</span>())
+    distance - <span class="hljs-property">@length</span>() &lt; <span class="hljs-number">1</span> / <span class="hljs-property">@model</span>.patches.size</pre></div></div>
             
         </li>
         
@@ -156,7 +162,7 @@ is called with patch coordinate transform installed.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">bothEnds</span>:<span class="hljs-function"> -&gt;</span> [<span class="hljs-property">@end1</span>, <span class="hljs-property">@end2</span>]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">bothEnds</span>: <span class="hljs-function">-&gt;</span> [<span class="hljs-property">@end1</span>, <span class="hljs-property">@end2</span>]</pre></div></div>
             
         </li>
         
@@ -171,7 +177,7 @@ is called with patch coordinate transform installed.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">length</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@end1</span>.distance <span class="hljs-property">@end2</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">length</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@end1</span>.distance <span class="hljs-property">@end2</span></pre></div></div>
             
         </li>
         
@@ -187,7 +193,18 @@ Assumes the given input <em>is</em> one of the link endpoint pairs!</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">otherEnd</span>: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@end1</span> <span class="hljs-keyword">is</span> a <span class="hljs-keyword">then</span> <span class="hljs-property">@end2</span> <span class="hljs-keyword">else</span> <span class="hljs-property">@end1</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">otherEnd</span>: <span class="hljs-function"><span class="hljs-params">(a)</span> -&gt;</span> <span class="hljs-keyword">if</span> <span class="hljs-property">@end1</span> <span class="hljs-keyword">is</span> a <span class="hljs-keyword">then</span> <span class="hljs-property">@end2</span> <span class="hljs-keyword">else</span> <span class="hljs-property">@end1</span>
+
+  <span class="hljs-attribute">setDraggable</span>: <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+    <span class="hljs-property">@on</span> <span class="hljs-string">'dragstart'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+      <span class="hljs-property">@dragging</span> = <span class="hljs-literal">true</span>
+
+    <span class="hljs-property">@on</span> <span class="hljs-string">'dragend'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+      <span class="hljs-property">@dragging</span> = <span class="hljs-literal">false</span>
+
+    <span class="hljs-property">@on</span> <span class="hljs-string">'drag'</span>, <span class="hljs-function"><span class="hljs-params">(mouseEvent)</span> =&gt;</span>
+      <span class="hljs-property">@end1</span>.setXY(<span class="hljs-property">@end1</span>.p.x - mouseEvent.dx, <span class="hljs-property">@end1</span>.p.y - mouseEvent.dy)
+      <span class="hljs-property">@end2</span>.setXY(<span class="hljs-property">@end2</span>.p.x - mouseEvent.dx, <span class="hljs-property">@end2</span>.p.y - mouseEvent.dy)</pre></div></div>
             
         </li>
         

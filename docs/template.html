@@ -63,7 +63,7 @@ for an example, not needed by simple models.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">startup</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># called by constructor</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">startup</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># called by constructor</span></pre></div></div>
             
         </li>
         
@@ -137,7 +137,7 @@ We also periodically change the patch colors to random gray values.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setup</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-comment"># called by Model.constructor</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setup</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-comment"># called by Model.constructor</span></pre></div></div>
             
         </li>
         
@@ -310,7 +310,7 @@ Note CoffeeScript
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">step</span>:<span class="hljs-function"> -&gt;</span>  <span class="hljs-comment"># called by Model.animate</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">step</span>: <span class="hljs-function">-&gt;</span>  <span class="hljs-comment"># called by Model.animate</span></pre></div></div>
             
         </li>
         
@@ -451,7 +451,7 @@ Note we modify the existing color, GC minimization.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    u.randomGray(p.color) <span class="hljs-keyword">if</span> p.x <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> p.y <span class="hljs-keyword">isnt</span> <span class="hljs-number">0</span> <span class="hljs-comment"># aviod GC, reuse color</span>
-  <span class="hljs-attribute">reportInfo</span>:<span class="hljs-function"> -&gt;</span></pre></div></div>
+  <span class="hljs-attribute">reportInfo</span>: <span class="hljs-function">-&gt;</span></pre></div></div>
             
         </li>
         
@@ -467,7 +467,7 @@ Note we modify the existing color, GC minimization.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    headings = <span class="hljs-property">@agents</span>.getProp <span class="hljs-string">"heading"</span>
-    <span class="hljs-function"><span class="hljs-title">avgHeading</span> = <span class="hljs-params">(headings.reduce (a,b)-&gt;a+b)</span> / @<span class="hljs-title">agents</span>.<span class="hljs-title">length</span>
+<span class="hljs-function">    <span class="hljs-title">avgHeading</span> = <span class="hljs-params">(headings.reduce (a,b)-&gt;a+b)</span> / @<span class="hljs-title">agents</span>.<span class="hljs-title">length</span>
 </span></pre></div></div>
             
         </li>
