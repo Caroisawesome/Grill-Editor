@@ -158,7 +158,7 @@ This sub-array feature is how breeds are managed, see class <code>Model</code></
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">create</span>:<span class="hljs-function"> -&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">create</span>: <span class="hljs-function">-&gt;</span></pre></div></div>
             
         </li>
         
@@ -344,7 +344,7 @@ This is useful if you want to watch your flood progress as an animation.</p>
         asetNext.push n <span class="hljs-keyword">if</span> asetNext.indexOf(n) &lt; <span class="hljs-number">0</span>
     stopEarly = fCallback <span class="hljs-keyword">and</span> fCallback(aset, asetNext)
     <span class="hljs-keyword">if</span> stopEarly <span class="hljs-keyword">or</span> asetNext.length <span class="hljs-keyword">is</span> <span class="hljs-number">0</span> <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> () =&gt;
       <span class="hljs-property">@floodFillOnce</span> asetNext, fCandidate, fJoin, fCallback, fNeighbors, aset</pre></div></div>
             
         </li>
@@ -366,7 +366,7 @@ as.sortById().uniq() <span class="hljs-comment"># [{id:0,x:0,y:1}, {id:1,x:8,y:0
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">uniq</span>:<span class="hljs-function"> -&gt;</span> u.uniq(@)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">uniq</span>: <span class="hljs-function">-&gt;</span> u.uniq(@)</pre></div></div>
             
         </li>
         
@@ -412,7 +412,7 @@ Used by agentset methods creating new agentsets.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toString</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-string">"["</span>+(a.toString() <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> @).join(<span class="hljs-string">", "</span>)+<span class="hljs-string">"]"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toString</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-string">"["</span>+(a.toString() <span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> @).join(<span class="hljs-string">", "</span>)+<span class="hljs-string">"]"</span></pre></div></div>
             
         </li>
         
@@ -531,7 +531,7 @@ max = AS.maxProp <span class="hljs-string">"y"</span>  <span class="hljs-comment
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">shuffle</span>:<span class="hljs-function"> -&gt;</span> u.shuffle @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">shuffle</span>: <span class="hljs-function">-&gt;</span> u.shuffle @</pre></div></div>
             
         </li>
         
@@ -548,7 +548,7 @@ AS.sortById(); AS.getProp <span class="hljs-string">"id"</span>  <span class="hl
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sortById</span>:<span class="hljs-function"> -&gt;</span> u.sortBy @, <span class="hljs-string">"id"</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">sortById</span>: <span class="hljs-function">-&gt;</span> u.sortBy @, <span class="hljs-string">"id"</span></pre></div></div>
             
         </li>
         
@@ -569,7 +569,7 @@ as.getProp <span class="hljs-string">"id"</span>  <span class="hljs-comment"># [
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clone</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@asSet</span> u.clone @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clone</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@asSet</span> u.clone @</pre></div></div>
             
         </li>
         
@@ -586,7 +586,7 @@ l=AS.last(); p=[l.x,l.y] <span class="hljs-comment"># [1,1]</span>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">last</span>:<span class="hljs-function"> -&gt;</span> u.last @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">last</span>: <span class="hljs-function">-&gt;</span> u.last @</pre></div></div>
             
         </li>
         
@@ -603,7 +603,7 @@ AS.getPropWith(<span class="hljs-string">"x"</span>, <span class="hljs-number">9
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">any</span>:<span class="hljs-function"> -&gt;</span> u.any @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">any</span>: <span class="hljs-function">-&gt;</span> u.any @</pre></div></div>
             
         </li>
         
@@ -636,7 +636,7 @@ as.getProp <span class="hljs-string">"id"</span>  <span class="hljs-comment"># [
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">oneOf</span>:<span class="hljs-function"> -&gt;</span> u.oneOf @</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">oneOf</span>: <span class="hljs-function">-&gt;</span> u.oneOf @</pre></div></div>
             
         </li>
         
@@ -668,7 +668,7 @@ min/max value, return the first. Error if agentset empty.
 If f is a string, return element with min/max value of that property.
 If “valueToo” then return an array of the agent and the value.</p>
 <pre><code>AS.minOneOf(<span class="hljs-string">"x"</span>) <span class="hljs-comment"># {id:0,x:0,y:1}</span>
-AS.maxOneOf<span class="hljs-function"><span class="hljs-params">((a)-&gt;a.x+a.y, <span class="hljs-literal">true</span>)</span> # {<span class="hljs-title">id</span>:2,<span class="hljs-title">x</span>:6,<span class="hljs-title">y</span>:4},10</span>
+AS.maxOneOf(<span class="hljs-function"><span class="hljs-params">(a)</span>-&gt;</span>a.x+a.y, <span class="hljs-literal">true</span>) <span class="hljs-comment"># {id:2,x:6,y:4},10</span>
 </code></pre>
             </div>
             
@@ -720,8 +720,8 @@ To show/hide an individual object, set its prototype: o.hidden = bool</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">show</span>:<span class="hljs-function"> -&gt;</span> o.hidden = <span class="hljs-literal">false</span> <span class="hljs-keyword">for</span> o <span class="hljs-keyword">in</span> @; <span class="hljs-property">@draw</span>(<span class="hljs-property">@model</span>.contexts[<span class="hljs-property">@name</span>])
-  <span class="hljs-attribute">hide</span>:<span class="hljs-function"> -&gt;</span> o.hidden = <span class="hljs-literal">true</span> <span class="hljs-keyword">for</span> o <span class="hljs-keyword">in</span> @; <span class="hljs-property">@draw</span>(<span class="hljs-property">@model</span>.contexts[<span class="hljs-property">@name</span>])</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">show</span>: <span class="hljs-function">-&gt;</span> o.hidden = <span class="hljs-literal">false</span> <span class="hljs-keyword">for</span> o <span class="hljs-keyword">in</span> @; <span class="hljs-property">@draw</span>(<span class="hljs-property">@model</span>.contexts[<span class="hljs-property">@name</span>])
+  <span class="hljs-attribute">hide</span>: <span class="hljs-function">-&gt;</span> o.hidden = <span class="hljs-literal">true</span> <span class="hljs-keyword">for</span> o <span class="hljs-keyword">in</span> @; <span class="hljs-property">@draw</span>(<span class="hljs-property">@model</span>.contexts[<span class="hljs-property">@name</span>])</pre></div></div>
             
         </li>
         
@@ -796,9 +796,17 @@ a <code>heading</code> from object <code>o</code>.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
-              <h3 id="debugging">Debugging</h3>
+              <h3 id="event-delegation">Event delegation</h3>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">on</span>: <span class="hljs-function"><span class="hljs-params">(name, cb)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> agent <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>
+      agent.<span class="hljs-literal">on</span>(name, cb)
+
+  <span class="hljs-attribute">off</span>: <span class="hljs-function"><span class="hljs-params">(name, cb)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> agent <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span>
+      agent.<span class="hljs-literal">off</span>(name, cb)</pre></div></div>
             
         </li>
         
@@ -809,8 +817,7 @@ a <code>heading</code> from object <code>o</code>.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-43">&#182;</a>
               </div>
-              <p>Useful in console.
-Also see <a href="http://goo.gl/1i7bd">CoffeeConsole</a> Chrome extension.</p>
+              <h3 id="debugging">Debugging</h3>
 
             </div>
             
@@ -822,6 +829,20 @@ Also see <a href="http://goo.gl/1i7bd">CoffeeConsole</a> Chrome extension.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-44">&#182;</a>
+              </div>
+              <p>Useful in console.
+Also see <a href="http://goo.gl/1i7bd">CoffeeConsole</a> Chrome extension.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-45">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-45">&#182;</a>
               </div>
               <p>Similar to NetLogo ask &amp; with operators.
 Allows functions as strings. Use:</p>
@@ -843,17 +864,17 @@ myModel.agents.<span class="hljs-reserved">with</span>(<span class="hljs-string"
         </li>
         
         
-        <li id="section-45">
+        <li id="section-46">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-45">&#182;</a>
+                <a class="pilcrow" href="#section-46">&#182;</a>
               </div>
               <p>The example agentset AS used in the code fragments was made like this,
 slightly more useful than shown above due to the toString method.</p>
 <pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">XY</span></span>
   <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(<span class="hljs-property">@x</span>,<span class="hljs-property">@y</span>)</span> -&gt;</span>
-  <span class="hljs-attribute">toString</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-string">"{id:<span class="hljs-subst">#{<span class="hljs-property">@id</span>}</span>,x:<span class="hljs-subst">#{<span class="hljs-property">@x</span>}</span>,y:<span class="hljs-subst">#{<span class="hljs-property">@y</span>}</span>}"</span>
+  <span class="hljs-attribute">toString</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-string">"{id:<span class="hljs-subst">#{<span class="hljs-property">@id</span>}</span>,x:<span class="hljs-subst">#{<span class="hljs-property">@x</span>}</span>,y:<span class="hljs-subst">#{<span class="hljs-property">@y</span>}</span>}"</span>
 <span class="hljs-property">@AS</span> = <span class="hljs-keyword">new</span> ABM.AgentSet <span class="hljs-comment"># @ =&gt; global name space</span>
 </code></pre><p>The result of</p>
 <pre><code>AS.add <span class="hljs-keyword">new</span> XY(u.randomInt(<span class="hljs-number">10</span>), u.randomInt(<span class="hljs-number">10</span>)) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">1.</span><span class="hljs-number">.5</span>]

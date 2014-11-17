@@ -206,7 +206,7 @@ for a few obvious cases but beware of unexpected [0,0,0] results.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomColor</span>:<span class="hljs-function"> -&gt;</span> (u.randomInt(<span class="hljs-number">256</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span><span class="hljs-number">.2</span>])</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomColor</span>: <span class="hljs-function">-&gt;</span> (u.randomInt(<span class="hljs-number">256</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span><span class="hljs-number">.2</span>])</pre></div></div>
             
         </li>
         
@@ -286,7 +286,7 @@ If all options false, only r,g,b,a remain.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">options</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">options</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-attribute">rgb</span>: <span class="hljs-literal">true</span>
     <span class="hljs-attribute">hsv</span>: <span class="hljs-literal">true</span>
     <span class="hljs-attribute">pixel</span>: <span class="hljs-literal">true</span>
@@ -425,7 +425,7 @@ to the new place in the array</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">sortBy</span>: <span class="hljs-function"><span class="hljs-params">(key, ascenting=<span class="hljs-literal">true</span>)</span> -&gt;</span>
-      <span class="hljs-function"><span class="hljs-title">compare</span> = <span class="hljs-params">(a, b)</span> -&gt;</span>
+<span class="hljs-function">      <span class="hljs-title">compare</span> = <span class="hljs-params">(a, b)</span> -&gt;</span>
         <span class="hljs-keyword">if</span> ascenting <span class="hljs-keyword">then</span> a[key]-b[key] <span class="hljs-keyword">else</span> b[key]-a[key]
       <span class="hljs-property">@sort</span> compare</pre></div></div>
             
@@ -476,8 +476,8 @@ to the new place in the array</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">randomIndex</span>:<span class="hljs-function"> -&gt;</span> u.randomInt <span class="hljs-property">@length</span>
-    <span class="hljs-attribute">randomColor</span>:<span class="hljs-function"> -&gt;</span> @[<span class="hljs-property">@randomIndex</span>()]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">randomIndex</span>: <span class="hljs-function">-&gt;</span> u.randomInt <span class="hljs-property">@length</span>
+    <span class="hljs-attribute">randomColor</span>: <span class="hljs-function">-&gt;</span> @[<span class="hljs-property">@randomIndex</span>()]</pre></div></div>
             
         </li>
         
@@ -740,7 +740,7 @@ Sometimes useful to sort by intensity afterwards.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">randomColorArray</span>: <span class="hljs-function"><span class="hljs-params">(nColors)</span> -&gt;</span>
-    <span class="hljs-function"><span class="hljs-title">rand255</span> = -&gt;</span> u.randomInt(<span class="hljs-number">256</span>)
+<span class="hljs-function">    <span class="hljs-title">rand255</span> = -&gt;</span> u.randomInt(<span class="hljs-number">256</span>)
     ([rand255(), rand255(), rand255()] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> [<span class="hljs-number">0.</span>..nColors])
   <span class="hljs-attribute">randomColorMap</span>: <span class="hljs-function"><span class="hljs-params">(nColors, options)</span> -&gt;</span>
     <span class="hljs-keyword">new</span> ColorMap <span class="hljs-property">@randomColorArray</span>(nColors), options
